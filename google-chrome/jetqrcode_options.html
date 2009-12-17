@@ -1,0 +1,44 @@
+<title>JetQRCode Settings</title>
+<script>
+var choeArray = {"UTF-8": 0, "Shift_JIS": 1, "ISO-8859-1": 2,};
+var apiArray = {"is.gd": 0, "tinyurl.com": 1};
+
+window.onload = function() {
+	var settings = document.forms['settings'].elements;
+	settings['shorturl-enable'].checked = (localStorage["shorturl-enable"]=="true");
+	//為了做到相容, 應該還是在 localStorage 裡存名稱比較好
+	settings['shorturl-api'].selectedIndex = apiArray[localStorage["shorturl-api"]] || 0;	
+	settings['choe'].selectedIndex = choeArray[localStorage["choe"]] || 0; 
+	settings['chs'].selectedIndex = localStorage["chs"] || 4;
+}
+
+function saveSettings(){ // would be better to triggered by onchange()
+	var settings = document.forms['settings'].elements;
+	localStorage["shorturl-enable"] = settings['shorturl-enable'].checked;
+	localStorage["shorturl-api"] = settings['shorturl-api'].value;
+	localStorage["choe"] = settings['choe'].value;
+	localStorage["chs"] = settings['chs'].selectedIndex;
+}
+
+</script>
+<h1>JetQRCode Options</h1>
+<!-- 我想還是應該把 jQuery UI 嵌進來才能跟 Jetpack 做比較順利的互轉。Jetpack 跟 jQuery 勾結太深了、從那邊過來這邊會稍微有點麻煩 (由奢入簡難…) -->
+<form name="settings">
+<p><input name="shorturl-enable" type="checkbox"/> Shorten the URL</p>
+<p>Service provider <select name="shorturl-api">
+    <script>
+      for (i in apiArray) document.write('<option>'+i+'</option>');
+    </script>
+</select> </p>
+<p>Output Encoding <select name="choe">
+    <script>
+      for (i in choeArray) document.write('<option>'+i+'</option>');
+    </script>
+</select> </p>
+<p>QRCode image size <select name="chs">
+	<script>
+		for (i=0; i<8; i++) document.write('<option>'+(i*50+150)+'</option>');
+	</script>
+</select> pixel</p>
+<button onclick="saveSettings()"> OK </button>
+</form>

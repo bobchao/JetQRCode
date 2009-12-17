@@ -1,0 +1,25 @@
+<title>JetQRCode background page</title>
+<script src="jquery.js"/>
+<script>
+	var sURLapi = {"is.gd":"http://is.gd/api.php?longurl=", "tinyurl.com":"http://tinyurl.com/api-create.php?url="};
+
+	chrome.extension.onRequest.addListener( function (msg, sender, sendResponse) {
+		switch (msg.request){
+			case "settings":
+				sendResponse({choe: localStorage["choe"] || "100", chs: localStorage["chs"] || 4, shorturlenable: localStorage["shorturl-enable"] || "false" });
+				break;
+			case "shorturl":
+				var api = (localStorage["shorturl-api"])? localStorage["shorturl-api"]:"is.gd";
+				$.get(sURLapi[localStorage["shorturl-api"]]+msg.url, function(data, textStatus){
+					if (textStatus == "success") sendResponse({url: data});
+				});
+				break;
+		}				
+	});
+
+	chrome.browserAction.onClicked.addListener(function(tab) {
+		chrome.tabs.sendRequest(tab.id, {request: "show"});
+	});
+
+
+</script>
